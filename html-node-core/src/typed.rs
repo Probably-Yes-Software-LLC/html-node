@@ -2,6 +2,7 @@
 #![allow(non_snake_case)]
 
 pub mod elements;
+pub mod svg;
 #[doc(hidden)]
 pub use paste::paste;
 

@@ -35,7 +35,7 @@ fn write_children(f: &mut Formatter<'_>, children: &[Node], is_fragment: bool) -
         } else {
             for child_str in children_iter.map(|child| format!("{child:#}")) {
                 for line in child_str.lines() {
-                    write!(f, "\n    {line}")?;
+                    write!(f, "\n\t{line}")?;
                 }
             }
 

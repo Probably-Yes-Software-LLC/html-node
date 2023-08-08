@@ -22,7 +22,7 @@ use quote::quote_spanned;
 use rstml::{node::Node, Parser, ParserConfig};
 #[cfg(feature = "basic-css")]
 use syn::spanned::Spanned;
-use syn::Type;
+use syn::{Token, Type};
 
 #[proc_macro]
 pub fn html(tokens: TokenStream) -> TokenStream {
@@ -188,14 +188,45 @@ fn tokenize_nodes(
 #[cfg(feature = "basic-css")]
 fn style_inner(tokens: TokenStream2) -> TokenStream {
     let span = tokens.span();
+
+    let mut in_block = false;
+    let mut line_indented = false;
+
     let raw_css = tokens
         .into_iter()
-        .map(|token_tree| {
-            token_tree
-                .to_string()
-                .split_whitespace()
-                .collect::<String>()
+        .flat_map(|token_tree| token_tree.to_string().chars().collect::<Vec<_>>())
+        .filter_map(|c| match c {
+            ' ' | '\n' | '\t' => None,
+            '{' => {
+                in_block = true;
+                Some(vec![' ', c, '\n'])
+            }
+            '}' => {
+                in_block = false;
+                Some(vec![c, '\n'])
+            }
+            ';' => {
+                line_indented = false;
+                Some(vec![c, '\n'])
+            }
+            '>' => Some(vec![' ', c, ' ']),
+            ':' => {
+                if in_block {
+                    Some(vec![c, ' '])
+                } else {
+                    Some(vec![c])
+                }
+            }
+            _ => {
+                if in_block && !line_indented {
+                    line_indented = true;
+                    Some(vec!['\t', c])
+                } else {
+                    Some(vec![c])
+                }
+            }
         })
+        .flatten()
         .collect::<String>();
 
     quote_spanned! { span=>

@@ -66,8 +66,10 @@
 //!     ",
 //! );
 
+#[cfg(feature = "htmx")]
+pub use html_node_core::htmx::Hx;
 #[allow(clippy::module_name_repetitions)]
-pub use html_node_core::typed::{elements, TypedAttributes, TypedElement};
+pub use html_node_core::typed::{elements, svg, TypedAttributes, TypedElement};
 /// Make a typed set of HTML attributes.
 ///
 /// Used internally by [`element!`].
@@ -202,3 +204,12 @@ pub use html_node_core::typed_elements as elements;
 /// };
 /// ```
 pub use html_node_macro::typed_html as html;
+
+#[allow(missing_docs)]
+#[cfg(feature = "htmx")]
+#[macro_export]
+macro_rules! htmx {
+    ($($tt:tt)*) => {
+        $crate::typed::html!((hx: $crate::typed::Hx) $($tt)*)
+    };
+}

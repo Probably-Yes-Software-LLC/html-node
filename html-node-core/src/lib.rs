@@ -22,6 +22,9 @@ pub mod pretty;
 #[cfg(feature = "typed")]
 pub mod typed;
 
+#[cfg(feature = "htmx")]
+pub mod htmx;
+
 use std::fmt::{self, Display, Formatter};
 
 pub use self::node::*;
