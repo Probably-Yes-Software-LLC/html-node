@@ -67,7 +67,7 @@
 //! );
 
 #[cfg(feature = "htmx")]
-pub use html_node_core::htmx::Hx;
+pub use html_node_core::htmx::*;
 #[allow(clippy::module_name_repetitions)]
 pub use html_node_core::typed::{elements, svg, TypedAttributes, TypedElement};
 /// Make a typed set of HTML attributes.
