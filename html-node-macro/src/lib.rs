@@ -196,7 +196,7 @@ fn style_inner(tokens: TokenStream2) -> TokenStream {
         .into_iter()
         .flat_map(|token_tree| token_tree.to_string().chars().collect::<Vec<_>>())
         .filter_map(|c| match c {
-            ' ' | '\n' | '\t' => None,
+            ' ' | '\n' | '\t' | '\'' => None,
             '{' => {
                 in_block = true;
                 Some(vec![' ', c, '\n'])
@@ -215,6 +215,13 @@ fn style_inner(tokens: TokenStream2) -> TokenStream {
                     Some(vec![c, ' '])
                 } else {
                     Some(vec![c])
+                }
+            }
+            ',' => {
+                if in_block {
+                    Some(vec![' '])
+                } else {
+                    Some(vec![c, ' '])
                 }
             }
             _ => {
